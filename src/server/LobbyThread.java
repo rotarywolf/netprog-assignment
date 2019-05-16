@@ -13,36 +13,22 @@ public class LobbyThread implements Runnable {
 
 	private GameType lobbyType;
 	private ArrayList<Player> playerList;
+	private static final int MAX_GUESSES = 4;
 	
-	protected LobbyThread() {
-		lobbyType = null;
+	protected LobbyThread(GameType lobbyType) {
+		this.lobbyType = lobbyType;
 		playerList = new ArrayList<Player>();
 	}
 
 	@Override
 	public void run() {
-		if (lobbyType == GameType.SINGLEPLAYER) {
-			if (this.getLobbySize() == 1) {
-				// if the lobby is SINGLEPLAYER, there should always be one player before run() is invoked.
-				// the PlayerMatchmakeThread should ensure this.
-				// TODO: start a SINGLEPLAYER game
-				System.out.println("SP lobby has started.");
-			}
-		} else if (lobbyType == GameType.MULTIPLAYER) {
-			while (this.getLobbySize() < 3) {
-				// wait for 3 players to join
-			}
-			// TODO: start a MULTIPLAYER game
-		}
-
+		
+		// TODO: run the game!
+		
 	}
 	
 	protected void addPlayer(Player player) {
 		playerList.add(player);
-	}
-	
-	protected void setLobbyType(GameType gameType) {
-		lobbyType = gameType;
 	}
 	
 	protected GameType getLobbyType() {
