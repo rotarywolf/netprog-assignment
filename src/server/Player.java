@@ -14,6 +14,7 @@ public class Player {
 	private String name;
 	private GameType gameType;
 	private Socket connection;
+	private int guesses;
 	
 	// TODO: store current guess? maximum score? etc.
 	
@@ -21,6 +22,7 @@ public class Player {
 		this.name = name;
 		this.gameType = gameType;
 		this.connection = connection;
+		guesses = 0;
 	}
 
 	public String getName() {
@@ -33,6 +35,15 @@ public class Player {
 
 	public Socket getConnection() {
 		return connection;
+	}
+	
+	public int incGuesses() {
+		guesses++;
+		return guesses;
+	}
+	
+	public void resetGuesses() {
+		guesses = 0;
 	}
 
 }
