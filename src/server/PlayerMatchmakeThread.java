@@ -59,7 +59,7 @@ public class PlayerMatchmakeThread implements Runnable {
 	 * @param connection
 	 */
 	protected void registerPlayer(Socket connection) {
-		new Thread(new RegisterThread(connection, this));
+		new Thread(new RegisterThread(connection, this)).start();
 	}
 	
 	protected void addToQueue(Player player) {
@@ -85,7 +85,7 @@ public class PlayerMatchmakeThread implements Runnable {
 				if (mpLobby.getLobbyType() == GameType.MULTIPLAYER &&
 					mpLobby.getLobbySize() < 3) {
 					// ensure the lobby is a multiplayer one AND there are free slots
-					System.out.println("Found MP lobby.");
+					System.out.println("Found MP lobby: " + mpLobby.getLobbySize() + " players waiting.");
 					return mpLobby;
 				}
 			}
