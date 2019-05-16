@@ -19,6 +19,7 @@ public class PlayerMatchmakeThread implements Runnable {
 
 	private LinkedList<Player> playerQueue;
 	private ArrayList<LobbyThread> lobbies;
+	private static final int MAX_MP_PLAYERS = 3;
 	
 	protected PlayerMatchmakeThread() {
 		playerQueue = new LinkedList<Player>();
@@ -41,7 +42,7 @@ public class PlayerMatchmakeThread implements Runnable {
 				} else {
 					LobbyThread mpLobby = findLobby(GameType.MULTIPLAYER);
 					mpLobby.addPlayer(nextPlayer);
-					if (mpLobby.getLobbySize() == 3) {
+					if (mpLobby.getLobbySize() == MAX_MP_PLAYERS) {
 						// we've filled the lobby. start it!
 						new Thread(mpLobby).start();
 					}
@@ -50,7 +51,6 @@ public class PlayerMatchmakeThread implements Runnable {
 				// that's fine, keep going until a player is added to the queue.
 			}
 		}
-
 	}
 	
 	/**
@@ -74,8 +74,7 @@ public class PlayerMatchmakeThread implements Runnable {
 		if (gameType == GameType.SINGLEPLAYER) {
 			// this player wants a singleplayer lobby.
 			// we create a new lobby for every singleplayer game.
-			lobby = new LobbyThread();
-			lobby.setLobbyType(GameType.SINGLEPLAYER);
+			lobby = new LobbyThread(GameType.SINGLEPLAYER);
 			lobbies.add(lobby);
 			System.out.println("Made new SP lobby.");
 			return lobby;
@@ -83,15 +82,14 @@ public class PlayerMatchmakeThread implements Runnable {
 			// this player wants a multiplayer lobby.
 			for (LobbyThread mpLobby : lobbies) {
 				if (mpLobby.getLobbyType() == GameType.MULTIPLAYER &&
-					mpLobby.getLobbySize() < 3) {
+					mpLobby.getLobbySize() < MAX_MP_PLAYERS) {
 					// ensure the lobby is a multiplayer one AND there are free slots
 					System.out.println("Found MP lobby: " + mpLobby.getLobbySize() + " players waiting.");
 					return mpLobby;
 				}
 			}
 			// couldn't find a multiplayer lobby with slots available. let's make one!
-			lobby = new LobbyThread();
-			lobby.setLobbyType(GameType.MULTIPLAYER);
+			lobby = new LobbyThread(GameType.MULTIPLAYER);
 			lobbies.add(lobby);
 			System.out.println("Made new MP lobby.");
 			return lobby;

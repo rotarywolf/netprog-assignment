@@ -62,8 +62,10 @@ public class Server {
 
 			while (true) {
 				// keep accepting connections and sending them to the matchmaking thread's player queue.
+				System.out.println("Waiting for connections...");
 				connection = serverSocket.accept();
 				matchmakingThread.registerPlayer(connection);
+				System.out.println("Sent new connection to register");
 			}
 
 		} catch (IOException e) {

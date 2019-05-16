@@ -1,5 +1,9 @@
 package server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 import server.Server.GameType;
@@ -20,11 +24,40 @@ public class RegisterThread implements Runnable {
 		GameType gameType;
 		System.out.println("Registering a new player.");
 		
-		// TODO: prompt player for their name and desired game type.
-		playerName = "TestPlayer";
-		gameType = GameType.SINGLEPLAYER;
+		try {
+			PrintWriter out = new PrintWriter(connection.getOutputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			// send a single 'r' character to the client.
+			// this indicates the server is ready for the client to input their name and desired gametype.
+			out.print('r');
+			out.flush();
+			
+			playerName = in.readLine();
+			System.out.println("Got player name: " + playerName);
+			gameType = parseGameTypeInput(in.readLine());
+			System.out.println("Got player gametype: " + gameType);
+			
+			matchmakingThread.addToQueue(new Player(playerName, gameType, connection));
+			
+		} catch (IOException e) {
+			System.err.println("An error occurred. Aborting.");
+			e.printStackTrace();
+		}
+	}
+	
+	private GameType parseGameTypeInput(String input) throws IOException {
+		GameType gameType = null;
 		
-		matchmakingThread.addToQueue(new Player(playerName, gameType, connection));
+		if (input.toUpperCase().trim().equals("SP")) {
+			gameType = GameType.SINGLEPLAYER;
+		} else if (input.toUpperCase().trim().equals("MP")) {
+			gameType = GameType.MULTIPLAYER;
+		} else {
+			throw new IOException();
+		}
+		
+		return gameType;
 	}
 
 }
