@@ -19,7 +19,6 @@ public class PlayerMatchmakeThread implements Runnable {
 
 	private LinkedList<Player> playerQueue;
 	private ArrayList<LobbyThread> lobbies;
-	private static final int MAX_MP_PLAYERS = 3;
 	
 	protected PlayerMatchmakeThread() {
 		playerQueue = new LinkedList<Player>();
@@ -42,7 +41,7 @@ public class PlayerMatchmakeThread implements Runnable {
 				} else {
 					LobbyThread mpLobby = findLobby(GameType.MULTIPLAYER);
 					mpLobby.addPlayer(nextPlayer);
-					if (mpLobby.getLobbySize() == MAX_MP_PLAYERS) {
+					if (mpLobby.getLobbySize() == Server.MAX_MP_PLAYERS) {
 						// we've filled the lobby. start it!
 						new Thread(mpLobby).start();
 					}
@@ -82,7 +81,7 @@ public class PlayerMatchmakeThread implements Runnable {
 			// this player wants a multiplayer lobby.
 			for (LobbyThread mpLobby : lobbies) {
 				if (mpLobby.getLobbyType() == GameType.MULTIPLAYER &&
-					mpLobby.getLobbySize() < MAX_MP_PLAYERS) {
+					mpLobby.getLobbySize() < Server.MAX_MP_PLAYERS) {
 					// ensure the lobby is a multiplayer one AND there are free slots
 					System.out.println("Found MP lobby: " + mpLobby.getLobbySize() + " players waiting.");
 					return mpLobby;

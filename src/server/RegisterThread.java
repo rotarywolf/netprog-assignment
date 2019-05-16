@@ -30,7 +30,7 @@ public class RegisterThread implements Runnable {
 			
 			// send a single 'r' character to the client.
 			// this indicates the server is ready for the client to input their name and desired gametype.
-			out.print('r');
+			out.print(Server.IS_READY);
 			out.flush();
 			
 			playerName = in.readLine();

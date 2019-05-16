@@ -1,5 +1,7 @@
 package server;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import server.Server.GameType;
 
@@ -14,7 +16,10 @@ public class Player {
 	private String name;
 	private GameType gameType;
 	private Socket connection;
+	private PrintWriter out;
+	
 	private int guesses;
+	private boolean winner;
 	
 	// TODO: store current guess? maximum score? etc.
 	
@@ -23,6 +28,13 @@ public class Player {
 		this.gameType = gameType;
 		this.connection = connection;
 		guesses = 0;
+		winner = false;
+		try {
+			out = new PrintWriter(this.connection.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public String getName() {
@@ -42,8 +54,32 @@ public class Player {
 		return guesses;
 	}
 	
+	public void forfeitGuess() {
+		guesses = -1;
+	}
+	
+	public int getGuesses() {
+		return guesses;
+	}
+	
 	public void resetGuesses() {
 		guesses = 0;
+	}
+	
+	public void won() {
+		winner = true;
+	}
+	
+	public boolean isWinner() {
+		return winner;
+	}
+	
+	public void resetWinner() {
+		winner = false;
+	}
+	
+	public PrintWriter getWriter() {
+		return out;
 	}
 
 }
