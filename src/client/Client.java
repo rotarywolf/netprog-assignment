@@ -13,6 +13,7 @@ public class Client {
 	
 	public static void testMain() throws UnknownHostException, IOException {
 		Socket socket = new Socket("localhost", 61802);
+		System.out.println("Connected to server");
 	}
 
 }
