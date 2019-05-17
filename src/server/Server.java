@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -51,6 +50,7 @@ public class Server {
 				// player queue.
 				connection = serverSocket.accept();
 				matchmakingThread.registerPlayer(connection);
+				LOGGER.info("Accepted connection from " + connection.getInetAddress() + ".");
 			}
 
 		} catch (IOException e) {
@@ -66,7 +66,6 @@ public class Server {
 	}
 
 	private void initLogger() {
-		Handler consoleHandler;
 		Handler fileHandler;
 
 		try {

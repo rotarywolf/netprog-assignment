@@ -31,14 +31,14 @@ public class LobbyThread implements Runnable {
 		int target;
 		String playerListString;
 		String resultsString = "";
-		Server.LOGGER.info("Started " + lobbyType + " lobby.");
+		Server.LOGGER.info("Started " + lobbyType + " lobby with ID " + Thread.currentThread().getId() + ".");
 
 		// broadcast the player list to everyone, and the maximum guesses.
 		playerListString = "You're playing with: ";
 		for (Player player : playerList) {
 			playerListString += player.getName() + " ";
 		}
-		playerListString += ". You all get " + Server.MAX_GUESSES + " guesses!";
+		playerListString += ". You get " + Server.MAX_GUESSES + " guesses!";
 		broadcast(playerListString + System.lineSeparator());
 
 		// generate the number for everyone to guess!
@@ -51,8 +51,6 @@ public class LobbyThread implements Runnable {
 		for (Thread gameThread : gameThreads) {
 			gameThread.start();
 		}
-
-		Server.LOGGER.info("Waiting for players to make their guesses...");
 
 		// wait for everyone's game to finish
 		for (Thread gameThread : gameThreads) {
@@ -84,7 +82,7 @@ public class LobbyThread implements Runnable {
 
 		// game has ended.
 		endOfGame();
-
+		Server.LOGGER.info(lobbyType + " lobby with ID " + Thread.currentThread().getId() + "has died.");
 	}
 
 	private void broadcast(String message) {

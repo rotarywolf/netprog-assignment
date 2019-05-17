@@ -28,16 +28,17 @@ public class EndGameThread implements Runnable {
 			// tell the client it's ready for the client's next option.
 			out.print(Server.IS_READY);
 			out.flush();
-			Server.LOGGER.info("Waiting for player to play again or quit...");
+
 			option = in.readLine();
 
 			if (option.toUpperCase().trim().equals("P")) {
 				// player wants to play again. put them back in the matchmaking queue!
+				Server.LOGGER.info("Player " + player.getName() + "wants to play again.");
 				matchmakingThread.addToQueue(player);
 			} else if (option.toUpperCase().trim().equals("Q")) {
-				// player wants to exit. just let the LobbyThread die.
+				Server.LOGGER.info("Player " + player.getName() + "has quit.");
 			} else {
-
+				Server.LOGGER.info("Player " + player.getName() + "has quit.");
 			}
 		} catch (IOException e) {
 			Server.LOGGER.log(Level.SEVERE, "Fatal error.", e);

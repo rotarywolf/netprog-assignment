@@ -37,6 +37,7 @@ public class GuessingGame implements Runnable {
 
 				// take the client's guess!
 				guess = in.readLine();
+				Server.LOGGER.info("Player " + player.getName() + " guessed " + guess + ".");
 
 				// now figure out what to tell the client
 				try {
@@ -44,6 +45,7 @@ public class GuessingGame implements Runnable {
 
 					if (guessInt == target) {
 						feedback = "You guessed the number! It took you " + player.getGuesses() + " guesses.";
+						Server.LOGGER.info("Player " + player.getName() + " won!");
 						player.won();
 					} else if (guessInt > 9 || guessInt < 0) {
 						feedback = "Enter a number between 0 and 9. Don't waste guesses!";
@@ -55,6 +57,7 @@ public class GuessingGame implements Runnable {
 				} catch (NumberFormatException e) {
 					if (guess.toUpperCase().equals("E")) {
 						feedback = "You forfeited like a coward.";
+						Server.LOGGER.info("Player " + player.getName() + " forfeited.");
 						player.forfeitGuess();
 					} else {
 						feedback = "That wasn't a number. Don't waste guesses!";
@@ -65,7 +68,6 @@ public class GuessingGame implements Runnable {
 				out.println(feedback);
 				out.flush();
 			}
-
 			// tell client to stop guessing.
 			out.print(Server.HALT_ACTION);
 			out.flush();

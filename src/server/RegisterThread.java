@@ -23,7 +23,6 @@ public class RegisterThread implements Runnable {
 	public void run() {
 		String playerName;
 		GameType gameType;
-		Server.LOGGER.info("Registering new player.");
 
 		try {
 			PrintWriter out = new PrintWriter(connection.getOutputStream());
@@ -37,6 +36,9 @@ public class RegisterThread implements Runnable {
 
 			playerName = in.readLine();
 			gameType = parseGameTypeInput(in.readLine());
+
+			Server.LOGGER
+					.info("Registered " + connection.getInetAddress() + " as Player with name " + playerName + ".");
 
 			matchmakingThread.addToQueue(new Player(playerName, gameType, connection));
 
