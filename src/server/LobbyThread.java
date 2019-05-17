@@ -6,12 +6,6 @@ import java.util.Comparator;
 
 import server.Server.GameType;
 
-/**
- * holds a lobby of players and begins a game for them.
- * 
- * @author Speck
- *
- */
 public class LobbyThread implements Runnable {
 
 	private GameType lobbyType;

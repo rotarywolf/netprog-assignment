@@ -7,16 +7,6 @@ import java.util.NoSuchElementException;
 
 import server.Server.GameType;
 
-/**
- * takes a connecting Player's request: either a singleplayer or multiplayer
- * game, and passes their corresponding Socket connection to the correct lobby.
- * singleplayer: a new lobby with a player limit of 1. so, a new lobby is
- * created for every singleplayer game. multiplayer: either a new lobby with a
- * player limit of 3, or an existing waiting lobby with less than 3 players.
- * 
- * @author Speck
- *
- */
 public class PlayerMatchmakeThread implements Runnable {
 
 	private LinkedList<Player> playerQueue;

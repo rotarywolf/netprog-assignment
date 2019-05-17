@@ -5,13 +5,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import server.Server.GameType;
 
-/**
- * the Player class links a client to a player name and their preferred game
- * type.
- * 
- * @author Speck
- *
- */
 public class Player {
 
 	private String name;
