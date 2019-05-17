@@ -5,12 +5,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-	
+
 	enum GameType {
 		SINGLEPLAYER, // singleplayer game
 		MULTIPLAYER // multiplayer game
 	}
-	
+
 	public static final char IS_READY = 'r';
 	public static final char HALT_ACTION = 's';
 	public static final int MAX_GUESSES = 4;
@@ -20,7 +20,7 @@ public class Server {
 		new Server();
 
 	}
-	
+
 	public Server() {
 		System.out.println("[*] Server started.");
 		ServerSocket serverSocket = null;
@@ -29,13 +29,15 @@ public class Server {
 
 		try {
 			serverSocket = new ServerSocket(61802);
-			
-			// create the matchmaking thread. we'll pass connections to it, where the matchmaker can figure out what lobby to put them in.
+
+			// create the matchmaking thread. we'll pass connections to it, where the
+			// matchmaker can figure out what lobby to put them in.
 			matchmakingThread = new PlayerMatchmakeThread();
 			new Thread(matchmakingThread).start();
 
 			while (true) {
-				// keep accepting connections and sending them to the matchmaking thread's player queue.
+				// keep accepting connections and sending them to the matchmaking thread's
+				// player queue.
 				System.out.println("Waiting for connections...");
 				connection = serverSocket.accept();
 				matchmakingThread.registerPlayer(connection);

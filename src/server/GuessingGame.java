@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 public class GuessingGame implements Runnable {
-	
+
 	private Player player;
 	private int target;
 	private int maxGuesses;
@@ -22,22 +22,22 @@ public class GuessingGame implements Runnable {
 		String guess;
 		int guessInt = -1;
 		String feedback;
-		
+
 		try {
 			PrintWriter out = player.getWriter();
 			BufferedReader in = new BufferedReader(new InputStreamReader(player.getConnection().getInputStream()));
-			
+
 			while (player.getGuesses() < maxGuesses && player.getGuesses() != -1 && !player.isWinner()) {
 				// tell the client it can keep guessing.
 				out.print(Server.IS_READY);
 				out.flush();
-				
+
 				player.incGuesses();
 				guess = in.readLine();
 				try {
 					guessInt = Integer.parseInt(guess);
-					
-					if (guessInt == target) { 
+
+					if (guessInt == target) {
 						feedback = "You guessed the number! It took you " + player.getGuesses() + " guesses.";
 						player.won();
 					} else if (guessInt > target) {
@@ -53,11 +53,11 @@ public class GuessingGame implements Runnable {
 						feedback = "That wasn't a number. Don't waste your guesses!";
 					}
 				}
-				
+
 				out.println(feedback);
 				out.flush();
 			}
-			
+
 			// tell client to stop guessing.
 			out.print(Server.HALT_ACTION);
 			out.flush();
