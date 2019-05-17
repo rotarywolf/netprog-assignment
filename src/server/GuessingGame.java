@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.logging.Level;
 
 public class GuessingGame implements Runnable {
 
@@ -33,10 +34,10 @@ public class GuessingGame implements Runnable {
 				out.flush();
 
 				player.incGuesses();
-				
+
 				// take the client's guess!
 				guess = in.readLine();
-				
+
 				// now figure out what to tell the client
 				try {
 					guessInt = Integer.parseInt(guess);
@@ -70,7 +71,7 @@ public class GuessingGame implements Runnable {
 			out.flush();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Server.LOGGER.log(Level.SEVERE, "Fatal error.", e);
 		}
 	}
 

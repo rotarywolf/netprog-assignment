@@ -3,6 +3,11 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -16,16 +21,21 @@ public class Server {
 	public static final int MAX_GUESSES = 4;
 	public static final int MAX_MP_PLAYERS = 3;
 
+	public static final Logger LOGGER = Logger.getLogger(Server.class.getName());
+	private static final String LOG_FILE = "server.log";
+
 	public static void main(String[] args) {
 		new Server();
 
 	}
 
 	public Server() {
-		System.out.println("[*] Server started.");
 		ServerSocket serverSocket = null;
 		Socket connection = null;
 		PlayerMatchmakeThread matchmakingThread = null;
+
+		initLogger();
+		LOGGER.info("Server started.");
 
 		try {
 			serverSocket = new ServerSocket(61802);
@@ -35,13 +45,12 @@ public class Server {
 			matchmakingThread = new PlayerMatchmakeThread();
 			new Thread(matchmakingThread).start();
 
+			LOGGER.info("Accepting connections...");
 			while (true) {
 				// keep accepting connections and sending them to the matchmaking thread's
 				// player queue.
-				System.out.println("Waiting for connections...");
 				connection = serverSocket.accept();
 				matchmakingThread.registerPlayer(connection);
-				System.out.println("Sent new connection to register");
 			}
 
 		} catch (IOException e) {
@@ -53,6 +62,22 @@ public class Server {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	private void initLogger() {
+		Handler consoleHandler;
+		Handler fileHandler;
+
+		try {
+			fileHandler = new FileHandler(LOG_FILE);
+
+			LOGGER.addHandler(fileHandler);
+
+			fileHandler.setLevel(Level.ALL);
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -33,16 +33,19 @@ public class PlayerMatchmakeThread implements Runnable {
 			try {
 				// grab the next player in line
 				Player nextPlayer = playerQueue.removeFirst();
-				System.out.println("Found " + nextPlayer.getName() + " in playerQueue.");
 
 				if (nextPlayer.getGameType() == GameType.SINGLEPLAYER) {
 					LobbyThread spLobby = findLobby(GameType.SINGLEPLAYER);
 					spLobby.addPlayer(nextPlayer);
+					Server.LOGGER
+							.info("Sent " + nextPlayer.getName() + " to a " + nextPlayer.getGameType() + " lobby.");
 					// it's a SP game, so start it now!
 					new Thread(spLobby).start();
 				} else {
 					LobbyThread mpLobby = findLobby(GameType.MULTIPLAYER);
 					mpLobby.addPlayer(nextPlayer);
+					Server.LOGGER
+							.info("Sent " + nextPlayer.getName() + " to a " + nextPlayer.getGameType() + " lobby.");
 					if (mpLobby.getLobbySize() == Server.MAX_MP_PLAYERS) {
 						// we've filled the lobby. start it!
 						new Thread(mpLobby).start();
@@ -60,7 +63,7 @@ public class PlayerMatchmakeThread implements Runnable {
 
 	protected void addToQueue(Player player) {
 		playerQueue.add(player);
-		System.out.println("Added " + player.getName() + " to playerQueue.");
+		Server.LOGGER.info("Added " + player.getName() + " to playerQueue.");
 
 	}
 
@@ -72,7 +75,7 @@ public class PlayerMatchmakeThread implements Runnable {
 			// we create a new lobby for every singleplayer game.
 			lobby = new LobbyThread(GameType.SINGLEPLAYER, this);
 			lobbies.add(lobby);
-			System.out.println("Made new SP lobby.");
+			Server.LOGGER.info("Created new " + GameType.SINGLEPLAYER + " lobby.");
 			return lobby;
 		} else {
 			// this player wants a multiplayer lobby.
@@ -80,13 +83,15 @@ public class PlayerMatchmakeThread implements Runnable {
 				if (mpLobby.getLobbyType() == GameType.MULTIPLAYER && mpLobby.getLobbySize() < Server.MAX_MP_PLAYERS) {
 					// ensure the lobby is a multiplayer one AND there are free slots
 					System.out.println("Found MP lobby: " + mpLobby.getLobbySize() + " players waiting.");
+					Server.LOGGER.info("Found " + GameType.MULTIPLAYER + " lobby: " + mpLobby.getLobbySize()
+							+ " players waiting.");
 					return mpLobby;
 				}
 			}
 			// couldn't find a multiplayer lobby with slots available. let's make one!
 			lobby = new LobbyThread(GameType.MULTIPLAYER, this);
 			lobbies.add(lobby);
-			System.out.println("Made new MP lobby.");
+			Server.LOGGER.info("Created new " + GameType.MULTIPLAYER + " lobby.");
 			return lobby;
 		}
 	}

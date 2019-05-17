@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Level;
 
 import server.Server.GameType;
 
@@ -22,7 +23,7 @@ public class RegisterThread implements Runnable {
 	public void run() {
 		String playerName;
 		GameType gameType;
-		System.out.println("Registering a new player.");
+		Server.LOGGER.info("Registering new player.");
 
 		try {
 			PrintWriter out = new PrintWriter(connection.getOutputStream());
@@ -40,8 +41,7 @@ public class RegisterThread implements Runnable {
 			matchmakingThread.addToQueue(new Player(playerName, gameType, connection));
 
 		} catch (IOException e) {
-			System.err.println("An error occurred. Aborting.");
-			e.printStackTrace();
+			Server.LOGGER.log(Level.SEVERE, "Fatal error.", e);
 		}
 	}
 
