@@ -54,12 +54,6 @@ public class PlayerMatchmakeThread implements Runnable {
 		}
 	}
 
-	/**
-	 * register the given connection as a player by prompting for their name and
-	 * desired game type.
-	 * 
-	 * @param connection
-	 */
 	protected void registerPlayer(Socket connection) {
 		new Thread(new RegisterThread(connection, this)).start();
 	}

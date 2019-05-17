@@ -35,9 +35,7 @@ public class RegisterThread implements Runnable {
 			out.flush();
 
 			playerName = in.readLine();
-			System.out.println("Got player name: " + playerName);
 			gameType = parseGameTypeInput(in.readLine());
-			System.out.println("Got player gametype: " + gameType);
 
 			matchmakingThread.addToQueue(new Player(playerName, gameType, connection));
 

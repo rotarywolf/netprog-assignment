@@ -1,6 +1,8 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import server.Server.GameType;
 
@@ -30,14 +32,17 @@ public class LobbyThread implements Runnable {
 		String playerListString;
 		String resultsString = "";
 
+		// broadcast the player list to everyone
 		playerListString = "You're playing with: ";
 		for (Player player : playerList) {
 			playerListString += player.getName() + " ";
 		}
 		broadcast(playerListString + System.lineSeparator());
 
+		// generate the number for everyone to guess!
 		target = (int) (Math.random() * 10) % 10;
 
+		// begin the game for all players in this lobby.
 		for (Player player : playerList) {
 			gameThreads.add(new Thread(new GuessingGame(player, target, Server.MAX_GUESSES)));
 		}
@@ -47,6 +52,7 @@ public class LobbyThread implements Runnable {
 
 		System.out.println("Waiting for players to make their guesses...");
 
+		// wait for everyone's game to finish
 		for (Thread gameThread : gameThreads) {
 			try {
 				gameThread.join();
@@ -54,7 +60,9 @@ public class LobbyThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
-
+		
+		// sort + build the results
+		sortPlayersByGuesses();
 		for (Player player : playerList) {
 			if (player.getGuesses() == -1) {
 				resultsString += player.getName() + " forfeited like a coward." + System.lineSeparator();
@@ -65,47 +73,29 @@ public class LobbyThread implements Runnable {
 				resultsString += player.getName() + " ran out of guesses." + System.lineSeparator();
 			}
 		}
+		
+		// now that the results are done, reset everyone's guesses and win status.
 		resetPlayers();
 
+		// send the results to everyone!
 		broadcast(resultsString + Server.HALT_ACTION + System.lineSeparator());
-		System.out.println("Game has ended.");
+		
+		// game has ended.
 		endOfGame();
 
 	}
 
-	/**
-	 * sends a String message to all Players concurrently.
-	 * 
-	 * @param message message to send
-	 */
 	private void broadcast(String message) {
 		ArrayList<Thread> broadcastThreads = new ArrayList<Thread>();
 
+		// start threads to send the message concurrently...
 		for (Player player : playerList) {
 			Thread broadcastThread = new Thread(new BroadcastThread(message, player));
 			broadcastThreads.add(broadcastThread);
 			broadcastThread.start();
 		}
 
-		for (Thread broadcastThread : broadcastThreads) {
-			try {
-				broadcastThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-
-	private void broadcast(char character) {
-		ArrayList<Thread> broadcastThreads = new ArrayList<Thread>();
-
-		for (Player player : playerList) {
-			Thread broadcastThread = new Thread(new BroadcastThread(character, player));
-			broadcastThreads.add(broadcastThread);
-			broadcastThread.start();
-		}
-
+		// now wait for them all to complete!
 		for (Thread broadcastThread : broadcastThreads) {
 			try {
 				broadcastThread.join();
@@ -125,17 +115,30 @@ public class LobbyThread implements Runnable {
 		}
 
 		// no need to join these threads, as the clients will be leaving the lobby
-		// anyway.
+		// anyway. bye bye!
+	}
+	
+	private void sortPlayersByGuesses() {
+		// this is a generally accepted method of sorting an ArrayList's elements by a specific parameter.
+		// here, we override compare() to compare the amount of guesses a player made when sorting.
+		Collections.sort(playerList, new Comparator<Player>() {
+			public int compare(Player player1, Player player2) {
+				// Integer.compare ranks negative numbers above positive numbers, for some reason.
+				if (player1.getGuesses() == -1) {
+					return 9999;
+				} else if (player2.getGuesses() == -1) {
+					return -9999;
+				} else {
+					return Integer.compare(player1.getGuesses(), player2.getGuesses());
+				}
+			}
+		});
 	}
 
 	protected void addPlayer(Player player) {
 		playerList.add(player);
 	}
 
-	/**
-	 * sets a Player's parameters back to the default, the same as before they
-	 * played.
-	 */
 	protected void resetPlayers() {
 		for (Player player : playerList) {
 			player.resetGuesses();

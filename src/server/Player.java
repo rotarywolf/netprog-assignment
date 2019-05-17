@@ -18,11 +18,9 @@ public class Player {
 	private GameType gameType;
 	private Socket connection;
 	private PrintWriter out;
-
+	// the below two parameters are reset before the player enters the game again.
 	private int guesses;
 	private boolean winner;
-
-	// TODO: store current guess? maximum score? etc.
 
 	public Player(String name, GameType gameType, Socket connection) {
 		this.name = name;
@@ -33,7 +31,6 @@ public class Player {
 		try {
 			out = new PrintWriter(this.connection.getOutputStream());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

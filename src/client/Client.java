@@ -50,7 +50,7 @@ public class Client {
 		System.out.println("Please input your name!");
 		playerName = clientIn.nextLine();
 		if (playerName.equals("")) {
-			// player left his name is empty. what an idiot.
+			// player left his name empty. what an idiot.
 			System.out.println("Can't say it's what I'd have picked for you.");
 			System.out.println("But if that's your name, that's your name.");
 			playerName = "The Courier";

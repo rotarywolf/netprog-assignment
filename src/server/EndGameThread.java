@@ -35,7 +35,7 @@ public class EndGameThread implements Runnable {
 			} else if (option.toUpperCase().trim().equals("Q")) {
 				// player wants to exit. just let the LobbyThread die.
 			} else {
-				// TODO: just exit anyway?
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

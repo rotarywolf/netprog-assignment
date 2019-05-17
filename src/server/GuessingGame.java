@@ -33,13 +33,19 @@ public class GuessingGame implements Runnable {
 				out.flush();
 
 				player.incGuesses();
+				
+				// take the client's guess!
 				guess = in.readLine();
+				
+				// now figure out what to tell the client
 				try {
 					guessInt = Integer.parseInt(guess);
 
 					if (guessInt == target) {
 						feedback = "You guessed the number! It took you " + player.getGuesses() + " guesses.";
 						player.won();
+					} else if (guessInt > 9 || guessInt < 0) {
+						feedback = "Enter a number between 0 and 9. Don't waste guesses!";
 					} else if (guessInt > target) {
 						feedback = "Too high!";
 					} else {
@@ -50,10 +56,11 @@ public class GuessingGame implements Runnable {
 						feedback = "You forfeited like a coward.";
 						player.forfeitGuess();
 					} else {
-						feedback = "That wasn't a number. Don't waste your guesses!";
+						feedback = "That wasn't a number. Don't waste guesses!";
 					}
 				}
 
+				// and finally send that message to the client.
 				out.println(feedback);
 				out.flush();
 			}

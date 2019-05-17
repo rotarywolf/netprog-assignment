@@ -4,8 +4,7 @@ import java.io.PrintWriter;
 
 public class BroadcastThread implements Runnable {
 
-	private String message = null; // default value of a string
-	private char character = '\u0000'; // default value of a character
+	private String message;
 	private Player player;
 
 	public BroadcastThread(String message, Player player) {
@@ -13,20 +12,10 @@ public class BroadcastThread implements Runnable {
 		this.player = player;
 	}
 
-	public BroadcastThread(char character, Player player) {
-		this.character = character;
-		this.player = player;
-	}
-
 	@Override
 	public void run() {
 		PrintWriter out = player.getWriter();
-
-		if (message != null) {
-			out.print(message);
-		} else if (character != '\u0000') {
-			out.print(character);
-		}
+		out.print(message);
 		out.flush();
 	}
 
